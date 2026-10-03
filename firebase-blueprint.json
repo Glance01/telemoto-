@@ -99,6 +99,7 @@
           ]
         },
         "cancellationReason": { "type": "string" },
+        "pickupReferencePhotoUrl": { "type": "string" },
         "passengerRatingGiven": { "type": "number" },
         "driverRatingGiven": { "type": "number" },
         "feedback": { "type": "string" },

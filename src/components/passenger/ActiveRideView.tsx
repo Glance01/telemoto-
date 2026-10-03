@@ -14,7 +14,9 @@ import {
   confirmPassengerArrival,
   confirmPassengerDestinationReached,
   submitRating,
+  updateTripReferencePhoto,
 } from '../../services/rideService';
+import { compressImageToBase64 } from '../../utils/imageCompressor';
 import {
   Phone,
   MessageSquare,
@@ -38,6 +40,8 @@ import {
   Check,
   Lock,
   Zap,
+  Camera,
+  X,
 } from 'lucide-react';
 
 interface ActiveRideViewProps {
@@ -67,6 +71,115 @@ export const ActiveRideView: React.FC<ActiveRideViewProps> = ({
   const [confirmingBoarding, setConfirmingBoarding] = useState<boolean>(false);
   const [confirmingDestination, setConfirmingDestination] = useState<boolean>(false);
   const [acceptingBid, setAcceptingBid] = useState<boolean>(false);
+
+  // Reference Photo States
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoBase64, setPhotoBase64] = useState<string>('');
+  const [sendingPhoto, setSendingPhoto] = useState<boolean>(false);
+
+  const handleCapturePhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Compress
+    try {
+      const base64 = await compressImageToBase64(file);
+      setPhotoBase64(base64);
+    } catch (err) {
+      console.error('Failed to compress reference photo:', err);
+    }
+  };
+
+  const handleSendReferencePhoto = async () => {
+    if (!photoBase64 || sendingPhoto) return;
+    setSendingPhoto(true);
+    const ok = await updateTripReferencePhoto(trip.id, photoBase64);
+    setSendingPhoto(false);
+    if (ok) {
+      setPhotoPreview(null);
+      setPhotoBase64('');
+    }
+  };
+
+  const renderReferencePhotoCard = () => {
+    return (
+      <div className="ios-glass p-5 rounded-3xl border border-neutral-200/80 dark:border-white/5 space-y-4">
+        {!trip.pickupReferencePhotoUrl ? (
+          <div className="space-y-4 text-left">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 border border-amber-500/20">
+                <Camera className="w-5 h-5 animate-pulse" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-[9px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">Verificação de Presença</span>
+                <h4 className="text-sm font-black text-neutral-900 dark:text-white leading-tight uppercase tracking-tight mt-0.5">📸 Prove que está no Local</h4>
+                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-normal mt-1">
+                  Tire uma foto de algo famoso à sua volta (estabelecimento, placa de loja, paragem, restaurante...) para o motorista localizá-lo rápido e provar que está lá!
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2.5">
+              {photoPreview ? (
+                <div className="relative w-full h-32 rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-black">
+                  <img src={photoPreview} alt="Ponto de Referência" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => { setPhotoPreview(null); setPhotoBase64(''); }}
+                    className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full hover:bg-black/80 cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <label className="w-full py-4 border-2 border-dashed border-neutral-300 dark:border-neutral-800 hover:border-amber-500 rounded-2xl flex flex-col items-center justify-center gap-1.5 cursor-pointer bg-neutral-50 hover:bg-neutral-100/50 dark:bg-neutral-900 dark:hover:bg-neutral-850/50 transition-colors">
+                  <Camera className="w-6 h-6 text-neutral-400" />
+                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">Tirar Foto do Ponto de Referência</span>
+                  <span className="text-[10px] text-neutral-400">Use a câmera do seu telemóvel</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleCapturePhoto}
+                    className="hidden"
+                  />
+                </label>
+              )}
+
+              {photoBase64 && (
+                <button
+                  type="button"
+                  onClick={handleSendReferencePhoto}
+                  disabled={sendingPhoto}
+                  className="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <Check className="w-4 h-4 stroke-[3]" />
+                  <span>{sendingPhoto ? 'A Enviar Foto...' : 'Enviar Foto de Referência'}</span>
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="p-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl border border-emerald-500/20 text-xs font-bold flex items-center gap-3 text-left">
+            <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500" />
+            <div>
+              <p className="uppercase tracking-wide text-[9px] font-black">Referência Visual Enviada!</p>
+              <p className="text-[10px] text-neutral-500 leading-normal mt-0.5">
+                O motorista recebeu a foto de referência e irá utilizá-la para o encontrar ao chegar ao local.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   // Telemetry
   const [liveSpeed, setLiveSpeed] = useState<number>(32);
@@ -252,6 +365,9 @@ export const ActiveRideView: React.FC<ActiveRideViewProps> = ({
                   </div>
                 </div>
 
+                {/* Local Photo Verification Step */}
+                {renderReferencePhotoCard()}
+
                 {/* PASSENGER CAN CONFIRM DRIVER HAS ARRIVED */}
                 <div className="pt-1">
                   <button
@@ -347,6 +463,9 @@ export const ActiveRideView: React.FC<ActiveRideViewProps> = ({
                     </span>
                   </div>
                 </div>
+
+                {/* Local Photo Verification Step */}
+                {renderReferencePhotoCard()}
 
                 {/* CONFIRM ARRIVAL / BOARDING BUTTON (PRIMARY) */}
                 <div className="space-y-2 pt-1">

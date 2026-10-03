@@ -162,6 +162,7 @@ export interface Trip {
   passengerConfirmedDestination?: boolean;
   passengerConfirmedDestinationTimestamp?: number;
   cancellationReason?: string;
+  pickupReferencePhotoUrl?: string;
   createdAt: number;
   updatedAt: number;
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { DriverProfile, Trip } from '../../types';
 import {
@@ -53,6 +54,7 @@ import {
   Sparkles,
   Lock,
   ChevronDown,
+  Camera,
   ChevronUp,
   Map as MapIcon,
   Navigation2,
@@ -123,6 +125,7 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
   }, [currentTrip?.status, currentTrip?.statusTimestamps?.trip_started, currentTrip?.updatedAt]);
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [paymentModalState, setPaymentModalState] = useState<'none' | 'processing' | 'success'>('none');
+  const [selectedReferencePhoto, setSelectedReferencePhoto] = useState<string | null>(null);
   const [processedFareData, setProcessedFareData] = useState<{
     totalFare: number;
     commission: number;
@@ -908,6 +911,33 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
                 )}
               </button>
             </div>
+
+            {/* Passenger's Local Reference Photo */}
+            {currentTrip.pickupReferencePhotoUrl ? (
+              <div className="p-4 bg-amber-500/10 rounded-2xl border border-amber-500/20 space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-amber-800 dark:text-amber-400">
+                  <Camera className="w-4 h-4 text-amber-500 animate-pulse" />
+                  <span className="uppercase tracking-wider text-[9px] font-black">Ponto de Referência Enviado pelo Cliente</span>
+                </div>
+                <div 
+                  className="relative w-full h-36 rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-black cursor-zoom-in group"
+                  onClick={() => setSelectedReferencePhoto(currentTrip.pickupReferencePhotoUrl || null)}
+                >
+                  <img 
+                    src={currentTrip.pickupReferencePhotoUrl} 
+                    alt="Ponto de Referência do Passageiro" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-350"
+                  />
+                  <div className="absolute bottom-2 right-2 px-2.5 py-1 bg-black/75 text-white rounded-lg text-[9px] font-black uppercase tracking-wider">
+                    Toque para Ampliar 🔍
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-3.5 bg-neutral-50 dark:bg-neutral-950/80 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 text-center text-[10px] text-neutral-400 font-bold uppercase tracking-wider">
+                ⏳ Aguardando foto de referência do local do passageiro...
+              </div>
+            )}
 
             {/* Route points */}
             <div className="bg-neutral-50 dark:bg-neutral-950/80 rounded-2xl p-3.5 space-y-2.5 text-xs border border-neutral-200 dark:border-neutral-800">
@@ -1834,6 +1864,42 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
           </div>
         )}
       </div>
+
+      {/* Zoom / Full Screen Reference Photo Expand Overlay */}
+      <AnimatePresence>
+        {selectedReferencePhoto && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-4 font-sans"
+            onClick={() => setSelectedReferencePhoto(null)}
+          >
+            <button 
+              className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedReferencePhoto(null);
+              }}
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <div className="max-w-md w-full text-center space-y-4" onClick={(e) => e.stopPropagation()}>
+              <motion.img 
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                src={selectedReferencePhoto} 
+                alt="Ponto de Referência" 
+                className="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl border-2 border-white/10"
+              />
+              <div className="p-4 bg-white/5 rounded-2xl border border-white/10 text-xs text-white/80 leading-normal font-bold">
+                📸 Procura por isto ao chegares! O passageiro enviou esta foto do local de recolha.
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Driver Chat Modal */}
       {isChatOpen && currentTrip && (

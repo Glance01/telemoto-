@@ -894,4 +894,21 @@ export async function markTripMessagesAsRead(tripId: string, currentUserId: stri
   }
 }
 
+/**
+ * Saves a base64 photo to the trip as local reference visual verification
+ */
+export async function updateTripReferencePhoto(tripId: string, photoBase64: string): Promise<boolean> {
+  try {
+    const tripRef = doc(db, 'trips', tripId);
+    await updateDoc(tripRef, {
+      pickupReferencePhotoUrl: photoBase64,
+      updatedAt: Date.now(),
+    });
+    return true;
+  } catch (err) {
+    console.error('Failed to update trip reference photo:', err);
+    return false;
+  }
+}
+
 
