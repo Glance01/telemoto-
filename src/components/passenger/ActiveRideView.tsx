@@ -64,6 +64,8 @@ export const ActiveRideView: React.FC<ActiveRideViewProps> = ({
   const { user } = useAuth();
   const { searchTimeRemaining, messages } = useRide();
   const { startCall, missedCallsCount, clearMissedCalls } = useCall();
+
+  const isDriverArrived = trip.status === 'driver_arrived' || trip.status === 'trip_started';
   
   const unreadCount = messages.filter(
     (m) => m.senderId !== user?.uid && !m.read
@@ -455,19 +457,40 @@ export const ActiveRideView: React.FC<ActiveRideViewProps> = ({
 
                   {/* PASSENGER CAN CONFIRM DRIVER HAS ARRIVED */}
                   <div className="pt-1">
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        setConfirmingBoarding(true);
-                        await confirmPassengerArrival(trip.id);
-                        setConfirmingBoarding(false);
-                      }}
-                      disabled={confirmingBoarding}
-                      className="w-full py-3.5 px-4 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-black text-xs uppercase tracking-widest rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-                    >
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                      <span>{confirmingBoarding ? 'A Confirmar...' : 'Confirmar Chegada do Motorista 📍'}</span>
-                    </button>
+                    {isDriverArrived ? (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          setConfirmingBoarding(true);
+                          await confirmPassengerArrival(trip.id);
+                          setConfirmingBoarding(false);
+                        }}
+                        disabled={confirmingBoarding || trip.passengerConfirmedArrival}
+                        className={`w-full py-3.5 px-4 font-black text-xs uppercase tracking-widest rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-sm ${
+                          trip.passengerConfirmedArrival
+                            ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500 cursor-default'
+                            : 'bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                        }`}
+                      >
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span>
+                          {confirmingBoarding
+                            ? 'A Confirmar...'
+                            : trip.passengerConfirmedArrival
+                            ? 'Presença Confirmada ✓'
+                            : 'Confirmar Chegada do Motorista 📍'}
+                        </span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled
+                        className="w-full py-3.5 px-4 bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 border border-neutral-200 dark:border-neutral-700 font-black text-xs uppercase tracking-widest rounded-2xl cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        <Clock className="w-4 h-4 animate-spin" />
+                        <span>Aguardando o motorista chegar ao local... ⏳</span>
+                      </button>
+                    )}
                   </div>
 
                   <div className="pt-1">
@@ -555,29 +578,40 @@ export const ActiveRideView: React.FC<ActiveRideViewProps> = ({
 
                 {/* CONFIRM ARRIVAL / BOARDING BUTTON (PRIMARY) */}
                 <div className="space-y-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      setConfirmingBoarding(true);
-                      await confirmPassengerArrival(trip.id);
-                      setConfirmingBoarding(false);
-                    }}
-                    disabled={confirmingBoarding || trip.passengerConfirmedArrival}
-                    className={`w-full py-4.5 px-6 font-black text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer ${
-                      trip.passengerConfirmedArrival
-                        ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-2 border-emerald-500 cursor-default'
-                        : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/30'
-                    }`}
-                  >
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span>
-                      {confirmingBoarding
-                        ? 'A Confirmar Chegada...'
-                        : trip.passengerConfirmedArrival
-                        ? 'Presença e Embarque Confirmados ✓'
-                        : 'Confirmar Chegada do Motorista 📍'}
-                    </span>
-                  </button>
+                  {isDriverArrived ? (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        setConfirmingBoarding(true);
+                        await confirmPassengerArrival(trip.id);
+                        setConfirmingBoarding(false);
+                      }}
+                      disabled={confirmingBoarding || trip.passengerConfirmedArrival}
+                      className={`w-full py-4.5 px-6 font-black text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer ${
+                        trip.passengerConfirmedArrival
+                          ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-2 border-emerald-500 cursor-default'
+                          : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/30'
+                      }`}
+                    >
+                      <CheckCircle2 className="w-5 h-5" />
+                      <span>
+                        {confirmingBoarding
+                          ? 'A Confirmar Chegada...'
+                          : trip.passengerConfirmedArrival
+                          ? 'Presença e Embarque Confirmados ✓'
+                          : 'Confirmar Chegada do Motorista 📍'}
+                      </span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="w-full py-4.5 px-6 bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 border border-neutral-200 dark:border-neutral-700 font-black text-xs sm:text-sm uppercase tracking-widest rounded-2xl cursor-not-allowed flex items-center justify-center gap-2.5"
+                    >
+                      <Clock className="w-5 h-5 animate-spin" />
+                      <span>Aguardando o motorista chegar ao local... ⏳</span>
+                    </button>
+                  )}
                   {trip.passengerConfirmedArrival && (
                     <p className="text-[11px] text-center font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">
                       ✓ Presença confirmada! O motorista já pode iniciar a corrida.
