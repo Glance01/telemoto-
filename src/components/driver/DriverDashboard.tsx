@@ -1105,14 +1105,39 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
                   <span>CHEGUEI AO PONTO DE ENCONTRO 📍</span>
                 </button>
               ) : (
-                <button
-                  type="button"
-                  disabled
-                  className="w-full py-4 bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 font-black text-xs sm:text-sm uppercase tracking-wider rounded-2xl border border-neutral-200 dark:border-neutral-700 cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  <Clock className="w-5 h-5 animate-spin" />
-                  <span>Aguardando Foto de Referência do Cliente... 📸</span>
-                </button>
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    disabled
+                    className="w-full py-4 bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 font-black text-xs sm:text-sm uppercase tracking-wider rounded-2xl border border-neutral-200 dark:border-neutral-700 cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    <Clock className="w-5 h-5 animate-spin" />
+                    <span>Aguardando Foto de Referência do Cliente... 📸</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!currentTrip) return;
+                      setProcessingAction(true);
+                      try {
+                        const tripRef = doc(db, 'trips', currentTrip.id);
+                        await updateDoc(tripRef, {
+                          pickupReferencePhotoUrl: 'skipped_by_driver',
+                          updatedAt: Date.now(),
+                        });
+                        showToast('Foto de referência ignorada. A avançar para o encontro!');
+                      } catch (e) {
+                        showToast('Erro ao avançar.');
+                      } finally {
+                        setProcessingAction(false);
+                      }
+                    }}
+                    disabled={processingAction}
+                    className="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>⚡ FORÇAR AVANÇO / CONTINUAR SEM FOTO</span>
+                  </button>
+                </div>
               )}
             </div>
           )}
