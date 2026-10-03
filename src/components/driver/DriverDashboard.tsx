@@ -1525,34 +1525,35 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
           /* SCROLLABLE MAIN PILOT DECK BODY */
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 scrollbar-thin">
             
-            {/* PROMINENT ONLINE / OFFLINE TOGGLE CARD */}
-            <div className={`p-4 rounded-3xl border transition-all shadow-lg ${
+            {/* PROMINENT ONLINE / OFFLINE TOGGLE CARD - ELITE DESIGN */}
+            <div className={`p-4 sm:p-5 rounded-[28px] border transition-all shadow-2xl relative overflow-hidden backdrop-blur-xl ${
               isOnline && profileStatus.isComplete
-                ? 'bg-gradient-to-r from-emerald-950/90 via-neutral-900 to-neutral-900 border-emerald-500/50 text-white'
-                : 'bg-gradient-to-r from-amber-950/90 via-neutral-900 to-neutral-900 border-amber-500/50 text-white'
+                ? 'bg-gradient-to-r from-emerald-950/95 via-neutral-900 to-neutral-900 border-emerald-500/60 text-white shadow-emerald-950/40'
+                : 'bg-gradient-to-r from-neutral-900 via-neutral-900 to-neutral-900 border-red-500/30 text-white shadow-red-950/20'
             }`}>
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-inner ${
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+              <div className="relative z-10 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg transition-transform ${
                     isOnline && profileStatus.isComplete
-                      ? 'bg-emerald-500 text-white ring-4 ring-emerald-500/20 animate-pulse'
-                      : 'bg-amber-500 text-neutral-950'
+                      ? 'bg-emerald-500 text-white ring-4 ring-emerald-500/30 animate-pulse'
+                      : 'bg-red-600 text-white ring-4 ring-red-600/20'
                   }`}>
-                    <Power className="w-5 h-5" />
+                    <Power className="w-6 h-6 stroke-[2.5]" />
                   </div>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
                       <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                        isOnline && profileStatus.isComplete ? 'bg-emerald-400 animate-ping' : 'bg-amber-400'
+                        isOnline && profileStatus.isComplete ? 'bg-emerald-400 animate-ping' : 'bg-red-500'
                       }`} />
                       <h3 className="text-xs font-black uppercase tracking-wider text-white truncate">
-                        {isOnline && profileStatus.isComplete ? 'Modo Online Ativo' : 'Modo Offline'}
+                        {isOnline && profileStatus.isComplete ? 'Modo Online Ativo' : 'Piloto Offline'}
                       </h3>
                     </div>
-                    <p className="text-[10px] text-neutral-300 mt-0.5 leading-tight truncate">
+                    <p className="text-[11px] text-neutral-300 mt-0.5 leading-tight truncate font-medium">
                       {isOnline && profileStatus.isComplete
-                        ? 'A receber pedidos. Notificações fora do app ativas.'
-                        : 'Ative para receber corridas mesmo fora do app.'}
+                        ? 'Radar ativo • Pronto para receber chamadas de passageiros.'
+                        : 'Ative o modo online para começar a faturar hoje.'}
                     </p>
                   </div>
                 </div>
@@ -1560,10 +1561,10 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
                 <button
                   type="button"
                   onClick={toggleOnline}
-                  className={`px-3.5 py-2.5 rounded-2xl font-black text-xs uppercase tracking-wider shadow-xl transition-all active:scale-95 cursor-pointer shrink-0 border ${
+                  className={`px-4 py-3 rounded-2xl font-black text-xs uppercase tracking-wider shadow-2xl transition-all active:scale-95 cursor-pointer shrink-0 border ${
                     isOnline && profileStatus.isComplete
-                      ? 'bg-red-600 hover:bg-red-700 text-white border-red-500 shadow-red-600/40'
-                      : 'bg-emerald-500 hover:bg-emerald-400 text-neutral-950 border-emerald-400 shadow-emerald-500/30 font-black'
+                      ? 'bg-neutral-950 hover:bg-neutral-900 text-white border-neutral-700 hover:border-red-500/50 shadow-black'
+                      : 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white border-red-500 shadow-red-600/50 font-black'
                   }`}
                 >
                   {isOnline && profileStatus.isComplete ? 'Ficar Offline' : 'Ficar Online ⚡'}
@@ -1592,15 +1593,15 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
               </div>
             )}
 
-            {/* MODERN RED DRIVER PROFILE HERO CARD */}
-            <div className="relative overflow-hidden p-4 sm:p-5 bg-gradient-to-br from-red-600 via-red-600 to-red-700 text-white rounded-3xl shadow-xl shadow-red-600/25 border border-red-500/40">
-              {/* Abstract subtle light effects */}
-              <div className="absolute top-0 right-0 w-36 h-36 bg-white/10 rounded-full -mr-12 -mt-12 blur-2xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-28 h-28 bg-black/20 rounded-full -ml-8 -mb-8 blur-xl pointer-events-none" />
+            {/* ULTRA-MODERN ELITE RED DRIVER PROFILE HERO CARD */}
+            <div className="relative overflow-hidden p-5 sm:p-6 bg-gradient-to-br from-red-600 via-red-600 to-rose-700 text-white rounded-[32px] shadow-2xl shadow-red-600/30 border border-red-500/50">
+              {/* Abstract glowing glass effects */}
+              <div className="absolute top-0 right-0 w-44 h-44 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/25 rounded-full -ml-10 -mb-10 blur-2xl pointer-events-none" />
 
               <div className="relative z-10 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3.5">
-                  <div className="relative w-14 h-14 rounded-2xl bg-white text-red-600 flex items-center justify-center font-black text-xl overflow-hidden border-2 border-white/80 shrink-0 shadow-lg">
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="relative w-16 h-16 rounded-2xl bg-white text-red-600 flex items-center justify-center font-black text-2xl overflow-hidden border-2 border-white/90 shrink-0 shadow-2xl">
                     {driverProfile.photoUrl ? (
                       <img
                         src={driverProfile.photoUrl}
@@ -1611,23 +1612,24 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
                       driverProfile?.fullName?.[0]?.toUpperCase() || 'M'
                     )}
                     {isOnline && (
-                      <span className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full ring-2 ring-emerald-500/50"></span>
+                      <span className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-400 border-2 border-white rounded-full ring-2 ring-emerald-500/60 shadow-md"></span>
                     )}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <h3 className="font-black text-base tracking-tight truncate max-w-[160px] sm:max-w-[200px] drop-shadow-sm">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-black text-lg tracking-tight truncate max-w-[170px] sm:max-w-[220px] drop-shadow-sm">
                         {driverProfile.fullName}
                       </h3>
-                      <span className="bg-white/20 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded-full backdrop-blur-xs flex items-center gap-1 border border-white/20">
-                        <ShieldCheck className="w-3 h-3 text-white" />
+                      <span className="bg-black/30 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full backdrop-blur-md flex items-center gap-1 border border-white/20 shadow-inner">
+                        <ShieldCheck className="w-3 h-3 text-emerald-300" />
                         <span>Oficial</span>
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-red-100 font-bold mt-1">
-                      <span>{driverProfile.bikeBrand || 'TeleMoto'} {driverProfile.bikeModel}</span>
-                      <span>•</span>
-                      <span className="bg-black/30 text-white px-2 py-0.5 rounded-lg font-mono text-[11px] border border-white/10">
+                    <div className="flex items-center gap-2 text-xs text-red-100 font-bold mt-1.5 flex-wrap">
+                      <span className="bg-white/15 px-2.5 py-0.5 rounded-lg backdrop-blur-xs border border-white/10">
+                        {driverProfile.bikeBrand || 'TeleMoto'} {driverProfile.bikeModel}
+                      </span>
+                      <span className="bg-black/30 text-white px-2.5 py-0.5 rounded-lg font-mono text-xs border border-white/20 tracking-wider">
                         {driverProfile.plateNumber || 'Sem Matrícula'}
                       </span>
                     </div>
@@ -1637,35 +1639,35 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
                 <button
                   type="button"
                   onClick={() => setShowEditPresentation(true)}
-                  className="p-2.5 bg-white/20 hover:bg-white/30 text-white rounded-2xl text-xs font-black backdrop-blur-md border border-white/20 transition-all active:scale-90 cursor-pointer shadow-sm"
+                  className="px-3.5 py-2.5 bg-white/20 hover:bg-white/30 text-white rounded-2xl text-xs font-black backdrop-blur-xl border border-white/35 transition-all active:scale-90 cursor-pointer shadow-lg shrink-0 uppercase tracking-wider"
                   title="Editar dados da moto e apresentação"
                 >
                   Editar
                 </button>
               </div>
 
-              {/* Quick metrics inside the driver card */}
-              <div className="relative z-10 grid grid-cols-3 gap-2 mt-4 pt-3.5 border-t border-white/15 text-center">
-                <div className="bg-black/20 rounded-2xl py-2 px-1 backdrop-blur-xs border border-white/10">
-                  <div className="flex items-center justify-center gap-1 text-amber-300 text-xs font-black">
-                    <Star className="w-3.5 h-3.5 fill-current" />
+              {/* High-end telemetry metrics inside the card */}
+              <div className="relative z-10 grid grid-cols-3 gap-2.5 mt-5 pt-4 border-t border-white/20 text-center">
+                <div className="bg-black/25 rounded-2xl py-2.5 px-1.5 backdrop-blur-md border border-white/15 shadow-inner">
+                  <div className="flex items-center justify-center gap-1 text-amber-300 text-sm font-black">
+                    <Star className="w-4 h-4 fill-current drop-shadow" />
                     <span>{driverProfile.rating?.toFixed(1) || '5.0'}</span>
                   </div>
-                  <p className="text-[10px] text-red-100 uppercase font-extrabold tracking-wider mt-0.5">Avaliação</p>
+                  <p className="text-[10px] text-red-100 uppercase font-black tracking-wider mt-0.5">Avaliação</p>
                 </div>
 
-                <div className="bg-black/20 rounded-2xl py-2 px-1 backdrop-blur-xs border border-white/10">
-                  <span className="text-white text-xs font-black font-mono">
+                <div className="bg-black/25 rounded-2xl py-2.5 px-1.5 backdrop-blur-md border border-white/15 shadow-inner">
+                  <span className="text-white text-sm font-black font-mono">
                     {driverProfile.totalRides || 0}
                   </span>
-                  <p className="text-[10px] text-red-100 uppercase font-extrabold tracking-wider mt-0.5">Corridas</p>
+                  <p className="text-[10px] text-red-100 uppercase font-black tracking-wider mt-0.5">Corridas</p>
                 </div>
 
-                <div className="bg-black/20 rounded-2xl py-2 px-1 backdrop-blur-xs border border-white/10">
-                  <span className="text-emerald-300 text-xs font-black font-mono">
+                <div className="bg-black/25 rounded-2xl py-2.5 px-1.5 backdrop-blur-md border border-white/15 shadow-inner">
+                  <span className="text-emerald-300 text-sm font-black font-mono">
                     {driverProfile.monthlyEarnings || 0} MT
                   </span>
-                  <p className="text-[10px] text-red-100 uppercase font-extrabold tracking-wider mt-0.5">Este Mês</p>
+                  <p className="text-[10px] text-red-100 uppercase font-black tracking-wider mt-0.5">Este Mês</p>
                 </div>
               </div>
             </div>
