@@ -1959,8 +1959,8 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
 
       {/* FULL DRIVER PROFILE EDIT MODAL */}
       {showEditPresentation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white dark:bg-neutral-900 rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl relative border border-neutral-200 dark:border-neutral-800 max-h-[92vh] overflow-y-auto space-y-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in overflow-y-auto">
+          <div className="bg-white dark:bg-neutral-900 rounded-3xl max-w-lg w-full p-5 sm:p-6 pb-36 shadow-2xl relative border border-neutral-200 dark:border-neutral-800 max-h-[92vh] overflow-y-auto space-y-4 my-auto">
             <button
               onClick={() => setShowEditPresentation(false)}
               className="absolute right-4 top-4 p-2 rounded-full text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"

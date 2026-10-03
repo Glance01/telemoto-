@@ -168,8 +168,8 @@ export const DriverWithdrawalModal: React.FC<DriverWithdrawalModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white dark:bg-neutral-900 rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative border border-neutral-200 dark:border-neutral-800 max-h-[92vh] overflow-y-auto space-y-5">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in overflow-y-auto">
+      <div className="bg-white dark:bg-neutral-900 rounded-3xl max-w-lg w-full p-6 sm:p-7 pb-36 shadow-2xl relative border border-neutral-200 dark:border-neutral-800 max-h-[92vh] overflow-y-auto space-y-5 my-auto">
         <button
           onClick={handleClose}
           className="absolute right-5 top-5 p-2 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
