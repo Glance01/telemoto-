@@ -900,36 +900,7 @@ export const PassengerHome: React.FC<PassengerHomeProps> = ({ onOpenSOS, onOpenA
                         ) : (
                           <button
                             onClick={() => {
-                              // Check GPS Geolocation Barrier if enabled
-                              if (antiAbuseSettings?.gpsCheckEnabled && 'geolocation' in navigator && originPoint) {
-                                navigator.geolocation.getCurrentPosition(
-                                  (pos) => {
-                                    const validation = validateOriginDistance(
-                                      pos.coords.latitude,
-                                      pos.coords.longitude,
-                                      originPoint.lat,
-                                      originPoint.lng,
-                                      antiAbuseSettings.gpsDistanceToleranceMeters
-                                    );
-                                    if (!validation.isWithinBounds) {
-                                      setGpsWarning({
-                                        show: true,
-                                        distanceMeters: validation.distanceMeters,
-                                        lat: pos.coords.latitude,
-                                        lng: pos.coords.longitude,
-                                      });
-                                    } else {
-                                      setViewMode('selection');
-                                    }
-                                  },
-                                  (err) => {
-                                    console.warn('Geolocation error during validation:', err);
-                                    setViewMode('selection');
-                                  }
-                                );
-                              } else {
-                                setViewMode('selection');
-                              }
+                              setViewMode('selection');
                             }}
                             className="w-full py-5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-black text-lg uppercase tracking-widest rounded-[32px] shadow-2xl transition-all active:scale-95 flex items-center justify-center gap-3 group"
                           >
