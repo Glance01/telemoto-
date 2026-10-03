@@ -386,11 +386,11 @@ export async function updateTripStatus(
           newStatus.startsWith('cancelled')
         ) {
           if (trip.driverId) {
-            await updateDoc(doc(db, 'drivers', trip.driverId), {
+            await setDoc(doc(db, 'drivers', trip.driverId), {
               currentTripId: null,
               isBusy: false,
               updatedAt: now,
-            });
+            }, { merge: true });
           }
         }
       }
@@ -655,11 +655,11 @@ export async function acceptDriverBid(
       if (snap.exists()) {
         const tripData = snap.data() as Trip;
         if (tripData.driverId) {
-          await updateDoc(doc(db, 'drivers', tripData.driverId), {
+          await setDoc(doc(db, 'drivers', tripData.driverId), {
             currentTripId: tripId,
             isBusy: true,
             updatedAt: now,
-          });
+          }, { merge: true });
 
           await notifyDriverPriceAcceptedByPassenger({
             id: tripId,
@@ -846,12 +846,12 @@ export async function confirmPassengerDestinationReached(tripId: string): Promis
       if (dSnap.exists()) {
         newTotalRides = ((dSnap.data() as any).totalRides || 0) + 1;
       }
-      await updateDoc(driverRef, {
+      await setDoc(driverRef, {
         currentTripId: null,
         isBusy: false,
         totalRides: newTotalRides,
         updatedAt: now,
-      });
+      }, { merge: true });
     }
 
     // Dispatch completion notification

@@ -128,7 +128,7 @@ export const DriverProfileView: React.FC = () => {
       baseFare: editBaseFare,
       bio: editBio.trim(),
       profileCompleted: true,
-      status: 'pending', // Send to admin for review
+      status: 'approved', // Automatically approved so they show up on the radar instantly!
     });
 
     if (ok) {

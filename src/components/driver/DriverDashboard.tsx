@@ -423,12 +423,13 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
   const toggleOnline = async () => {
     if (!user || driverProfile?.status !== 'approved') return;
 
-    if (!profileStatus.isComplete) {
+    const nextStatus = !isOnline;
+
+    if (nextStatus && !profileStatus.isComplete) {
       setShowIncompleteProfileModal(true);
       return;
     }
 
-    const nextStatus = !isOnline;
     setIsOnline(nextStatus);
     await setDriverOnlineStatus(user.uid, nextStatus);
 
@@ -1057,17 +1058,31 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
                   </p>
                 </div>
 
-                <div className="p-3 bg-white/15 rounded-2xl border border-white/20 flex items-start gap-2.5 text-xs text-red-50">
-                  <MessageSquare className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
-                  <div className="space-y-0.5">
-                    <p className="font-black text-amber-200 text-[11px] uppercase tracking-wider">
-                      Recomendação Oficial:
-                    </p>
-                    <p className="text-[11px] leading-relaxed">
-                      Ao chegar no ponto de recolha e <strong>não ver o cliente</strong>, use o <strong>Chat do TeleMoto+</strong> para lhe mandar mensagens com rapidez e segurança.
-                    </p>
+                {!currentTrip.pickupReferencePhotoUrl ? (
+                  <div className="p-3 bg-amber-500/20 text-amber-200 rounded-2xl border border-amber-500/30 flex items-start gap-2.5 text-xs">
+                    <Camera className="w-4 h-4 text-amber-300 shrink-0 mt-0.5 animate-pulse" />
+                    <div className="space-y-0.5">
+                      <p className="font-black text-amber-300 text-[11px] uppercase tracking-wider">
+                        Aguardando Foto de Referência:
+                      </p>
+                      <p className="text-[11px] leading-relaxed">
+                        Para evitar chamadas falsas e abusos, o passageiro está obrigado a <strong>tirar uma foto de algo famoso no local</strong>. Aguarde o envio para ver a foto e poder ir recolhê-lo!
+                      </p>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="p-3 bg-emerald-500/20 text-emerald-200 rounded-2xl border border-emerald-500/30 flex items-start gap-2.5 text-xs">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0 mt-0.5" />
+                    <div className="space-y-0.5">
+                      <p className="font-black text-emerald-300 text-[11px] uppercase tracking-wider">
+                        Foto de Referência Recebida!
+                      </p>
+                      <p className="text-[11px] leading-relaxed">
+                        O passageiro enviou a foto do local. Veja a foto de referência abaixo para o localizar com facilidade e inicie a deslocação.
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 <button
                   type="button"
@@ -1079,15 +1094,26 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
                 </button>
               </div>
 
-              <button
-                type="button"
-                onClick={handleArrived}
-                disabled={processingAction}
-                className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-2xl shadow-xl shadow-emerald-600/30 transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-2"
-              >
-                <CheckCircle2 className="w-5 h-5" />
-                <span>CHEGUEI AO PONTO DE ENCONTRO 📍</span>
-              </button>
+              {currentTrip.pickupReferencePhotoUrl ? (
+                <button
+                  type="button"
+                  onClick={handleArrived}
+                  disabled={processingAction}
+                  className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-2xl shadow-xl shadow-emerald-600/30 transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span>CHEGUEI AO PONTO DE ENCONTRO 📍</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="w-full py-4 bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 font-black text-xs sm:text-sm uppercase tracking-wider rounded-2xl border border-neutral-200 dark:border-neutral-700 cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  <Clock className="w-5 h-5 animate-spin" />
+                  <span>Aguardando Foto de Referência do Cliente... 📸</span>
+                </button>
+              )}
             </div>
           )}
 

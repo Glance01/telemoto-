@@ -461,7 +461,7 @@ export const PassengerHome: React.FC<PassengerHomeProps> = ({ onOpenSOS, onOpenA
         />
 
         {/* TOP FLOATING OVERLAYS */}
-        <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none gap-2">
+        <div className="absolute top-20 sm:top-24 left-4 right-4 z-20 flex items-center justify-between pointer-events-none gap-2">
           {/* Region Picker Pill */}
           <div className="relative pointer-events-auto">
             <button
@@ -1005,7 +1005,7 @@ export const PassengerHome: React.FC<PassengerHomeProps> = ({ onOpenSOS, onOpenA
           ) : (
              <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-8">
                 {/* Minimal Header for Radar */}
-                <div className="absolute top-10 left-6 z-20">
+                <div className="absolute top-20 sm:top-24 left-6 z-20">
                   <button 
                     onClick={() => setIsMenuOpen(true)}
                     className="p-3 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 rounded-2xl shadow-lg border border-neutral-200 dark:border-neutral-700"

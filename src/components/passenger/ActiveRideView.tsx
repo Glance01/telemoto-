@@ -16,6 +16,8 @@ import {
   submitRating,
   updateTripReferencePhoto,
 } from '../../services/rideService';
+import { db } from '../../lib/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 import { compressImageToBase64 } from '../../utils/imageCompressor';
 import {
   Phone,
@@ -324,78 +326,162 @@ export const ActiveRideView: React.FC<ActiveRideViewProps> = ({
               animate={{ opacity: 1, y: 0 }}
               className="space-y-4"
             >
-              <div className="ios-glass p-6 rounded-[2.5rem] border border-white/20 shadow-2xl space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-neutral-200 overflow-hidden border-2 border-amber-500 shadow-lg shrink-0">
-                      {trip.driverPhoto ? <img src={trip.driverPhoto} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center font-black text-xl text-neutral-400">M</div>}
+              {!trip.pickupReferencePhotoUrl ? (
+                <div className="ios-glass p-8 rounded-[3rem] border-2 border-amber-500 shadow-2xl text-center space-y-6">
+                  <div className="w-20 h-20 bg-amber-500/10 text-amber-500 rounded-3xl flex items-center justify-center mx-auto border border-amber-500/20">
+                    <Camera className="w-10 h-10 animate-pulse" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">Verificação de Presença Obrigatória</span>
+                    <h3 className="text-2xl font-black tracking-tight text-neutral-900 dark:text-white uppercase leading-tight mt-1">📸 Prove que está no Local</h3>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium leading-relaxed mt-2">
+                      A proposta de <strong className="text-amber-600 dark:text-amber-400">{trip.fareAmount} MT</strong> foi aceite!
+                    </p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium leading-relaxed mt-2 max-w-xs mx-auto">
+                      Para sua segurança e do motorista, por favor <b>tire uma foto de algo muito famoso ou notável</b> à sua volta (um estabelecimento, restaurante, planta, casa, paragem de autocarro...).
+                    </p>
+                  </div>
+
+                  <div className="bg-amber-500/5 p-4 rounded-2xl border border-amber-500/10 text-left space-y-2">
+                    <div className="flex gap-2.5 text-[11px] text-amber-800 dark:text-amber-400 font-bold">
+                      <span className="shrink-0 text-amber-600">1️⃣</span>
+                      <span>Facilita ao motorista localizá-lo rapidamente no ponto de recolha.</span>
                     </div>
-                    <div>
-                      <h4 className="font-black text-lg text-neutral-900 dark:text-white leading-tight uppercase italic">{trip.driverName}</h4>
-                      <div className="flex items-center gap-2 text-xs font-bold text-neutral-500 mt-1">
-                        <span className="flex items-center gap-1 text-amber-500">
-                          <Star className="w-3 h-3 fill-amber-500" /> {trip.driverRating || '5.0'}
-                        </span>
-                        <span>•</span>
-                        <span className="text-red-500">{trip.bikeBrand}</span>
+                    <div className="flex gap-2.5 text-[11px] text-amber-800 dark:text-amber-400 font-bold">
+                      <span className="shrink-0 text-amber-600">2️⃣</span>
+                      <span>Confirma que você está realmente no local combinado.</span>
+                    </div>
+                    <div className="flex gap-2.5 text-[11px] text-amber-800 dark:text-amber-400 font-bold">
+                      <span className="shrink-0 text-amber-600">3️⃣</span>
+                      <span>Evita abusos e chamar motoristas para locais onde você não está.</span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    {photoPreview ? (
+                      <div className="relative w-full h-48 rounded-2xl overflow-hidden border-2 border-neutral-200 dark:border-neutral-800 bg-black shadow-inner">
+                        <img src={photoPreview} alt="Ponto de Referência" className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => { setPhotoPreview(null); setPhotoBase64(''); }}
+                          className="absolute top-3 right-3 p-2 bg-black/60 hover:bg-black/85 text-white rounded-full cursor-pointer transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="w-full py-8 border-2 border-dashed border-neutral-300 dark:border-neutral-800 hover:border-amber-500 rounded-3xl flex flex-col items-center justify-center gap-2 cursor-pointer bg-neutral-50 hover:bg-neutral-100/50 dark:bg-neutral-900 dark:hover:bg-neutral-850/50 transition-all group">
+                        <Camera className="w-8 h-8 text-neutral-400 group-hover:text-amber-500 group-hover:scale-110 transition-all" />
+                        <span className="text-xs font-black text-neutral-600 dark:text-neutral-300 uppercase tracking-wider">Tirar Foto do Ponto Famoso / Local 📸</span>
+                        <span className="text-[10px] text-neutral-400">Clique para abrir a câmera do seu telemóvel</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          onChange={handleCapturePhoto}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+
+                    {photoBase64 ? (
+                      <button
+                        type="button"
+                        onClick={handleSendReferencePhoto}
+                        disabled={sendingPhoto}
+                        className="w-full py-4.5 bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl shadow-amber-500/20 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                      >
+                        <Check className="w-4 h-4 stroke-[3]" />
+                        <span>{sendingPhoto ? 'A Enviar Foto...' : 'Enviar Foto e Chamar Motorista 🚀'}</span>
+                      </button>
+                    ) : null}
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={onCancel}
+                      className="w-full py-3.5 px-6 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-red-200 dark:border-red-800/60 transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <XCircle className="w-4 h-4" />
+                      <span>Cancelar Corrida</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="ios-glass p-6 rounded-[2.5rem] border border-white/20 shadow-2xl space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-2xl bg-neutral-200 overflow-hidden border-2 border-amber-500 shadow-lg shrink-0">
+                        {trip.driverPhoto ? <img src={trip.driverPhoto} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center font-black text-xl text-neutral-400">M</div>}
+                      </div>
+                      <div>
+                        <h4 className="font-black text-lg text-neutral-900 dark:text-white leading-tight uppercase italic">{trip.driverName}</h4>
+                        <div className="flex items-center gap-2 text-xs font-bold text-neutral-500 mt-1">
+                          <span className="flex items-center gap-1 text-amber-500">
+                            <Star className="w-3 h-3 fill-amber-500" /> {trip.driverRating || '5.0'}
+                          </span>
+                          <span>•</span>
+                          <span className="text-red-500">{trip.bikeBrand}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="px-3 py-1.5 bg-neutral-950 text-white font-mono font-black text-xs rounded-xl shadow-lg border border-white/10 uppercase tracking-tighter">
-                      {trip.plateNumber}
-                    </div>
-                    <p className="text-[8px] font-black text-neutral-400 uppercase mt-1 tracking-widest">Matrícula</p>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-neutral-100 dark:bg-white/5 rounded-2xl border border-white/5 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-lg">
-                      <Navigation className="w-5 h-5 animate-spin-slow" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Aproximando-se</p>
-                      <p className="text-sm font-black text-neutral-900 dark:text-white tracking-tight">Cerca de 3 minutos</p>
+                    <div className="text-right">
+                      <div className="px-3 py-1.5 bg-neutral-950 text-white font-mono font-black text-xs rounded-xl shadow-lg border border-white/10 uppercase tracking-tighter">
+                        {trip.plateNumber}
+                      </div>
+                      <p className="text-[8px] font-black text-neutral-400 uppercase mt-1 tracking-widest">Matrícula</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Preço</p>
-                    <p className="text-lg font-black text-emerald-500 font-mono tracking-tighter">{trip.biddingPrice || trip.fareAmount} MT</p>
+
+                  <div className="p-4 bg-neutral-100 dark:bg-white/5 rounded-2xl border border-white/5 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-lg">
+                        <Navigation className="w-5 h-5 animate-spin-slow" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Aproximando-se</p>
+                        <p className="text-sm font-black text-neutral-900 dark:text-white tracking-tight">Cerca de 3 minutos</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Preço</p>
+                      <p className="text-lg font-black text-emerald-500 font-mono tracking-tighter">{trip.biddingPrice || trip.fareAmount} MT</p>
+                    </div>
+                  </div>
+
+                  {/* Local Photo Verification Step */}
+                  {renderReferencePhotoCard()}
+
+                  {/* PASSENGER CAN CONFIRM DRIVER HAS ARRIVED */}
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        setConfirmingBoarding(true);
+                        await confirmPassengerArrival(trip.id);
+                        setConfirmingBoarding(false);
+                      }}
+                      disabled={confirmingBoarding}
+                      className="w-full py-3.5 px-4 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-black text-xs uppercase tracking-widest rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      <span>{confirmingBoarding ? 'A Confirmar...' : 'Confirmar Chegada do Motorista 📍'}</span>
+                    </button>
+                  </div>
+
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={onCancel}
+                      className="w-full py-3 px-4 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 font-black text-xs uppercase tracking-widest rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <XCircle className="w-4 h-4 text-red-500" />
+                      <span>Cancelar Corrida</span>
+                    </button>
                   </div>
                 </div>
-
-                {/* Local Photo Verification Step */}
-                {renderReferencePhotoCard()}
-
-                {/* PASSENGER CAN CONFIRM DRIVER HAS ARRIVED */}
-                <div className="pt-1">
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      setConfirmingBoarding(true);
-                      await confirmPassengerArrival(trip.id);
-                      setConfirmingBoarding(false);
-                    }}
-                    disabled={confirmingBoarding}
-                    className="w-full py-3.5 px-4 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-black text-xs uppercase tracking-widest rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-                  >
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>{confirmingBoarding ? 'A Confirmar...' : 'Confirmar Chegada do Motorista 📍'}</span>
-                  </button>
-                </div>
-
-                <div className="pt-1">
-                  <button
-                    type="button"
-                    onClick={onCancel}
-                    className="w-full py-3 px-4 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 font-black text-xs uppercase tracking-widest rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <XCircle className="w-4 h-4 text-red-500" />
-                    <span>Cancelar Corrida</span>
-                  </button>
-                </div>
-              </div>
+              )}
             </motion.div>
           )}
 
@@ -649,8 +735,25 @@ export const ActiveRideView: React.FC<ActiveRideViewProps> = ({
                     </button>
                   </div>
                 ) : (
-                  <div className="pt-4">
+                  <div className="pt-4 space-y-4">
                     <p className="text-sm font-black text-emerald-600 uppercase tracking-widest italic animate-pulse">Avalie a sua experiência no ecrã de avaliação!</p>
+                    
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await updateDoc(doc(db, 'trips', trip.id), {
+                            passengerRated: true,
+                            updatedAt: Date.now(),
+                          });
+                        } catch (err) {
+                          console.error('Failed to clear active trip and return to menu:', err);
+                        }
+                      }}
+                      className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <span>Voltar ao Menu Principal 🏠</span>
+                    </button>
                   </div>
                 )}
               </div>
