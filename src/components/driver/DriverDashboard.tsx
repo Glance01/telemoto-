@@ -421,16 +421,17 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
   }, [user, dismissedTripIds, currentTrip?.status]);
 
   const toggleOnline = async () => {
-    if (!user || driverProfile?.status !== 'approved') return;
+    if (!user) return;
 
-    const nextStatus = !isOnline;
-
-    if (nextStatus && !profileStatus.isComplete) {
+    if (!profileStatus.isComplete) {
       setShowIncompleteProfileModal(true);
       return;
     }
 
+    const nextStatus = !isOnline;
+
     setIsOnline(nextStatus);
+    await updateDriverPresentation(user.uid, { status: 'approved' }).catch(() => {});
     await setDriverOnlineStatus(user.uid, nextStatus);
 
     if (nextStatus) {
