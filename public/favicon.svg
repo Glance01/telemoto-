@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Red Outer Square/Rounded Base -->
+  <rect width="512" height="512" rx="112" fill="#E11D48"/>
+
+  <!-- Outer Grunge/Brush Circular Ring -->
+  <circle cx="256" cy="256" r="236" fill="#000000" filter="url(#glow)"/>
+  <circle cx="256" cy="256" r="232" stroke="#E11D48" stroke-width="8" stroke-dasharray="120 18 60 12 90 20 40 10" fill="none" opacity="0.95"/>
+  <circle cx="256" cy="256" r="222" stroke="#E11D48" stroke-width="4" stroke-dasharray="80 15 40 8" fill="none" opacity="0.7"/>
+
+  <!-- Speed Streaks (Red horizontal bars behind the moto) -->
+  <rect x="100" y="205" width="48" height="9" rx="4.5" fill="#E11D48"/>
+  <rect x="142" y="205" width="60" height="9" rx="4.5" fill="#E11D48"/>
+
+  <rect x="80" y="222" width="70" height="9" rx="4.5" fill="#E11D48"/>
+  <rect x="160" y="222" width="45" height="9" rx="4.5" fill="#E11D48"/>
+
+  <rect x="65" y="239" width="85" height="9" rx="4.5" fill="#E11D48"/>
+
+  <rect x="110" y="256" width="78" height="9" rx="4.5" fill="#E11D48"/>
+
+  <!-- Motorcycle Body & Rider (White) -->
+  <g fill="#FFFFFF">
+    <!-- Helmet / Rider Head -->
+    <path d="M312 195 C312 180, 326 168, 342 168 C358 168, 372 180, 372 195 C372 206, 364 216, 352 218 L356 238 L340 238 L334 220 C322 216, 312 206, 312 195 Z"/>
+
+    <!-- Motorcycle Body Aerodynamic Fairing -->
+    <path d="M140 256 H230 C256 256, 280 230, 310 230 C332 230, 348 245, 348 266 L310 266 C296 266, 285 272, 276 282 C255 258, 220 248, 185 256 Z"/>
+
+    <!-- Front Fork & Mudguard -->
+    <path d="M344 246 C360 246, 378 252, 386 266 C364 266, 350 258, 344 246 Z"/>
+    <path d="M356 266 L352 300 H366 L372 266 Z"/>
+
+    <!-- Front Wheel -->
+    <circle cx="362" cy="306" r="34" stroke="#FFFFFF" stroke-width="16" fill="none"/>
+  </g>
+
+  <!-- Typography: TeleMoto+ -->
+  <g id="TeleMoto-Text" transform="translate(256, 396)">
+    <!-- "Tele" in Crisp White Bold Italic -->
+    <text x="-165" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="62" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="-1.5">
+      Tele
+    </text>
+    <!-- "Moto+" in Vivid Red Bold Italic -->
+    <text x="-40" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="62" font-weight="900" font-style="italic" fill="#E11D48" letter-spacing="-1.5">
+      Moto+
+    </text>
+  </g>
+</svg>

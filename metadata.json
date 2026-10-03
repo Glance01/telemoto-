@@ -1,0 +1,6 @@
+{
+  "name": "TeleMoto+",
+  "description": "Plataforma de mobilidade urbana em Moçambique que conecta passageiros e moto-taxistas em tempo real de forma segura e rápida.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

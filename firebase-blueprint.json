@@ -1,0 +1,224 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Passenger or general user profile in the TeleMoto+ platform",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["passenger", "driver", "admin", "super_admin"] },
+        "province": { "type": "string" },
+        "city": { "type": "string" },
+        "emergencyContact": { "type": "string" },
+        "rating": { "type": "number" },
+        "totalRides": { "type": "number" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "fullName", "phone", "role"]
+    },
+    "Driver": {
+      "title": "Driver",
+      "description": "Registered motorcycle taxi driver profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "licenseNumber": { "type": "string" },
+        "bikeBrand": { "type": "string" },
+        "bikeModel": { "type": "string" },
+        "bikeColor": { "type": "string" },
+        "plateNumber": { "type": "string" },
+        "helmetProvided": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "suspended"] },
+        "isOnline": { "type": "boolean" },
+        "currentLat": { "type": "number" },
+        "currentLng": { "type": "number" },
+        "province": { "type": "string" },
+        "city": { "type": "string" },
+        "rating": { "type": "number" },
+        "totalTrips": { "type": "number" },
+        "acceptanceRate": { "type": "number" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "fullName", "phone", "bikeBrand", "plateNumber", "status"]
+    },
+    "Trip": {
+      "title": "Trip",
+      "description": "Motorcycle taxi ride request and active/past trip",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "passengerId": { "type": "string" },
+        "passengerName": { "type": "string" },
+        "passengerPhone": { "type": "string" },
+        "passengerRating": { "type": "number" },
+        "driverId": { "type": "string" },
+        "driverName": { "type": "string" },
+        "driverPhone": { "type": "string" },
+        "driverPhoto": { "type": "string" },
+        "bikeBrand": { "type": "string" },
+        "bikeModel": { "type": "string" },
+        "bikeColor": { "type": "string" },
+        "plateNumber": { "type": "string" },
+        "origin": { "type": "object" },
+        "destination": { "type": "object" },
+        "distanceKm": { "type": "number" },
+        "durationMin": { "type": "number" },
+        "fareMzn": { "type": "number" },
+        "baseFare": { "type": "number" },
+        "distanceFare": { "type": "number" },
+        "timeFare": { "type": "number" },
+        "nightSurcharge": { "type": "number" },
+        "rushHourSurcharge": { "type": "number" },
+        "platformCommission": { "type": "number" },
+        "driverEarnings": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["cash", "mpesa", "emola", "mkesh", "wallet", "card"] },
+        "paymentStatus": { "type": "string", "enum": ["pending", "paid", "failed"] },
+        "status": {
+          "type": "string",
+          "enum": [
+            "requested",
+            "searching_driver",
+            "driver_assigned",
+            "driver_arriving",
+            "trip_started",
+            "trip_completed",
+            "payment_pending",
+            "paid",
+            "cancelled_by_passenger",
+            "cancelled_by_driver",
+            "cancelled_by_system",
+            "disputed"
+          ]
+        },
+        "cancellationReason": { "type": "string" },
+        "passengerRatingGiven": { "type": "number" },
+        "driverRatingGiven": { "type": "number" },
+        "feedback": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "passengerId", "passengerName", "origin", "destination", "fareMzn", "status", "paymentMethod", "createdAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Push and in-app system notification for passengers, drivers, and admins",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "type": { "type": "string" },
+        "read": { "type": "boolean" },
+        "sound": { "type": "string" },
+        "data": { "type": "object" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "userId", "title", "body", "type", "createdAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Real-time in-app chat message between passenger and driver during a trip",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tripId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "senderRole": { "type": "string" },
+        "receiverId": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "read": { "type": "boolean" }
+      },
+      "required": ["id", "tripId", "senderId", "senderRole", "text", "createdAt"]
+    },
+    "Wallet": {
+      "title": "Wallet",
+      "description": "Driver and passenger balance and transaction records",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "balance": { "type": "number" },
+        "currency": { "type": "string" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "userId", "balance", "currency"]
+    },
+    "RideRequest": {
+      "title": "RideRequest",
+      "description": "Request for a ride initiated by a passenger",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "passengerId": { "type": "string" },
+        "passengerName": { "type": "string" },
+        "origin": { "type": "object" },
+        "destination": { "type": "object" },
+        "status": { "type": "string", "enum": ["searching", "completed", "cancelled"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "passengerId", "origin", "destination", "status", "createdAt"]
+    },
+    "RideBid": {
+      "title": "RideBid",
+      "description": "Price proposal submitted by a driver for a ride request",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "requestId": { "type": "string" },
+        "driverId": { "type": "string" },
+        "driverName": { "type": "string" },
+        "bikeBrand": { "type": "string" },
+        "plateNumber": { "type": "string" },
+        "proposedPrice": { "type": "number" },
+        "status": { "type": "string", "enum": ["proposed", "accepted", "rejected"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "requestId", "driverId", "proposedPrice", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "User" },
+      "description": "User profiles for passengers and administrators"
+    },
+    "/drivers/{driverId}": {
+      "schema": { "$ref": "Driver" },
+      "description": "Driver accounts, status, vehicles and current GPS positions"
+    },
+    "/trips/{tripId}": {
+      "schema": { "$ref": "Trip" },
+      "description": "Trips lifecycle, fare calculation, routes and status"
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "Notification" },
+      "description": "Real-time notifications for trip alerts, driver applications, and admin broadcasts"
+    },
+    "/messages/{messageId}": {
+      "schema": { "$ref": "Message" },
+      "description": "In-trip chat messages"
+    },
+    "/wallets/{walletId}": {
+      "schema": { "$ref": "Wallet" },
+      "description": "Financial wallet account balances for drivers and users"
+    },
+    "/rideRequests/{requestId}": {
+      "schema": { "$ref": "RideRequest" },
+      "description": "Ride requests awaiting driver bids"
+    },
+    "/rideBids/{bidId}": {
+      "schema": { "$ref": "RideBid" },
+      "description": "Driver price proposals for specific ride requests"
+    }
+  }
+}

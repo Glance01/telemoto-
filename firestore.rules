@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isUser(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    // Drivers collection
+    match /drivers/{driverId} {
+      allow read, write: if true;
+    }
+
+    // Trips collection
+    match /trips/{tripId} {
+      allow read, write: if true;
+    }
+
+    // Trip locations
+    match /tripLocations/{locationId} {
+      allow read, write: if true;
+    }
+
+    // Payments
+    match /payments/{paymentId} {
+      allow read, write: if true;
+    }
+
+    // Wallets & Transactions
+    match /wallets/{walletId} {
+      allow read, write: if true;
+    }
+
+    match /walletTransactions/{transactionId} {
+      allow read, write: if true;
+    }
+
+    match /withdrawalRequests/{requestId} {
+      allow read, write: if true;
+    }
+
+    // Ratings
+    match /ratings/{ratingId} {
+      allow read, write: if true;
+    }
+
+    // Chat messages
+    match /messages/{messageId} {
+      allow read, write: if true;
+    }
+
+    // Notifications
+    match /notifications/{notificationId} {
+      allow read, write: if true;
+    }
+
+    // Complaints
+    match /complaints/{complaintId} {
+      allow read, write: if true;
+    }
+
+    // Ride requests and bids
+    match /rideRequests/{requestId} {
+      allow read, write: if true;
+    }
+
+    match /rideBids/{bidId} {
+      allow read, write: if true;
+    }
+
+    // Master configs (cities, zones, pricing, settings)
+    match /cities/{cityId} {
+      allow read, write: if true;
+    }
+
+    match /zones/{zoneId} {
+      allow read, write: if true;
+    }
+
+    match /pricingPlans/{planId} {
+      allow read, write: if true;
+    }
+
+    match /settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    // Default fallback
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

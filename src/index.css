@@ -1,0 +1,183 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  * {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  ::selection {
+    background: rgba(220, 38, 38, 0.2);
+    color: #dc2626;
+  }
+}
+
+@layer utilities {
+  .ios-glass {
+    @apply bg-white/70 dark:bg-neutral-900/70 backdrop-blur-xl border border-white/20 dark:border-white/5;
+  }
+  
+  .ios-glass-dark {
+    @apply bg-black/40 backdrop-blur-2xl border border-white/10;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+html.dark, html.dark body {
+  background-color: #0a0a0a !important;
+  color: #f5f5f5 !important;
+}
+
+html.dark .bg-white,
+html.dark [class*="bg-white"],
+html.dark [class*="bg-neutral-50"],
+html.dark [class*="bg-[#F5F5F5]"] {
+  background-color: #121212 !important;
+  color: #f5f5f5 !important;
+  border-color: #262626 !important;
+}
+
+html.dark [class*="bg-neutral-100"] {
+  background-color: #1a1a1a !important;
+  color: #f5f5f5 !important;
+  border-color: #2a2a2a !important;
+}
+
+html.dark [class*="text-neutral-9"],
+html.dark [class*="text-neutral-8"],
+html.dark [class*="text-neutral-7"] {
+  color: #f5f5f5 !important;
+}
+
+html.dark [class*="text-neutral-6"],
+html.dark [class*="text-neutral-5"] {
+  color: #a3a3a3 !important;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+html.dark ::-webkit-scrollbar-track {
+  background: #171717;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 9999px;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #404040;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #f97316;
+}
+
+/* Enable completely free, natural mobile touch scrolling */
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Animations for Floating Motorcycles 🛵 */
+@keyframes floatMoto {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(-1.5deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+@keyframes floatShadow {
+  0% {
+    transform: scale(1);
+    opacity: 0.28;
+  }
+  50% {
+    transform: scale(0.68);
+    opacity: 0.12;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.28;
+  }
+}
+
+@keyframes floatBobListView {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float-moto-0 {
+  animation: floatMoto 3.2s ease-in-out infinite;
+}
+.animate-float-moto-1 {
+  animation: floatMoto 3.6s ease-in-out infinite 0.6s;
+}
+.animate-float-moto-2 {
+  animation: floatMoto 2.9s ease-in-out infinite 1.2s;
+}
+.animate-float-moto-3 {
+  animation: floatMoto 3.4s ease-in-out infinite 1.8s;
+}
+.animate-float-moto-4 {
+  animation: floatMoto 3.1s ease-in-out infinite 0.3s;
+}
+.animate-float-moto {
+  animation: floatBobListView 3.2s ease-in-out infinite;
+}
+
