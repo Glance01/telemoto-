@@ -638,11 +638,13 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
 
   // Touch drag gesture handlers for bottom drawer
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStartY(e.touches[0].clientY);
+    if (e.touches && e.touches[0]) {
+      setTouchStartY(e.touches[0].clientY);
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartY === null) return;
+    if (touchStartY === null || !e.changedTouches || !e.changedTouches[0]) return;
     const touchEndY = e.changedTouches[0].clientY;
     const diff = touchEndY - touchStartY;
 
@@ -697,16 +699,16 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
         lng: currentTrip.destination.lng,
       };
     }
-  } else if (incomingTrips.length > 0) {
+  } else if (incomingTrips.length > 0 && incomingTrips[0]) {
     mapOrigin = {
       address: 'Minha Posição (Motorista)',
       lat: currentCoords.lat,
       lng: currentCoords.lng,
     };
     mapDestination = {
-      address: incomingTrips[0].origin.address,
-      lat: incomingTrips[0].origin.lat,
-      lng: incomingTrips[0].origin.lng,
+      address: incomingTrips[0]?.origin?.address || 'Destino',
+      lat: incomingTrips[0]?.origin?.lat || currentCoords.lat,
+      lng: incomingTrips[0]?.origin?.lng || currentCoords.lng,
     };
   }
 
@@ -1606,7 +1608,7 @@ export const DriverDashboard: React.FC<DriverDashboardProps> = ({ onOpenSOS }) =
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      driverProfile.fullName[0]?.toUpperCase() || 'M'
+                      driverProfile?.fullName?.[0]?.toUpperCase() || 'M'
                     )}
                     {isOnline && (
                       <span className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full ring-2 ring-emerald-500/50"></span>
