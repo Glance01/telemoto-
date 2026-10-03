@@ -420,8 +420,8 @@ export const DriverProfileView: React.FC = () => {
 
       {/* MODAL EDIT / SUBMIT PROFILE DATA */}
       {showEditModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-neutral-200 max-h-[90vh] overflow-y-auto space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-fade-in overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 pb-28 sm:pb-8 shadow-2xl relative border border-neutral-200 max-h-[92vh] overflow-y-auto space-y-4 my-auto">
             <button
               onClick={() => setShowEditModal(false)}
               className="absolute right-4 top-4 p-2 rounded-full text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"

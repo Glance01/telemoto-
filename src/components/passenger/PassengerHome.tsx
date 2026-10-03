@@ -92,24 +92,10 @@ export const PassengerHome: React.FC<PassengerHomeProps> = ({ onOpenSOS, onOpenA
 
   // Regional & Anti-Abuse state
   const [antiAbuseSettings, setAntiAbuseSettings] = useState<AntiAbuseSettings | null>(null);
-  const [gpsWarning, setGpsWarning] = useState<{ show: boolean; distanceMeters: number; lat: number; lng: number } | null>(null);
 
   useEffect(() => {
     getAntiAbuseSettings().then(setAntiAbuseSettings).catch(console.warn);
   }, []);
-
-  const handleCorrectOriginToGps = (lat: number, lng: number) => {
-    const addr = `Localização Atual (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
-    setOriginInput(addr);
-    setOriginPoint({
-      address: addr,
-      lat,
-      lng,
-    });
-    setGpsWarning(null);
-    setViewMode('selection');
-    showToast('Ponto de partida corrigido para a sua localização real!');
-  };
 
   const suspension = checkSuspensionStatus(userProfile?.suspendedUntil || 0);
 
@@ -1149,57 +1135,7 @@ export const PassengerHome: React.FC<PassengerHomeProps> = ({ onOpenSOS, onOpenA
         </div>
       )}
 
-      {/* 5. GEOLOCATION DIVERGENCE WARNING MODAL */}
-      <AnimatePresence>
-        {gpsWarning?.show && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 font-sans animate-fade-in"
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-white dark:bg-neutral-900 rounded-[36px] border border-neutral-100 dark:border-neutral-800 p-6 shadow-2xl max-w-sm w-full text-center space-y-5"
-            >
-              <div className="w-16 h-16 bg-amber-500/15 text-amber-500 rounded-[24px] border border-amber-500/20 flex items-center justify-center mx-auto shadow-inner">
-                <AlertCircle className="w-8 h-8" />
-              </div>
-              
-              <div className="space-y-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-amber-500">Barreira de Segurança (GPS)</p>
-                <h3 className="text-xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-none">Divergência de Ponto</h3>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed font-bold">
-                  Você está a cerca de <span className="text-neutral-900 dark:text-white font-black">{gpsWarning.distanceMeters} metros</span> de distância do local de recolha escolhido.
-                </p>
-                <p className="text-[11px] text-neutral-400 leading-normal">
-                  Chamar um motorista para um local onde você não se encontra pode resultar em **multas e suspensão** de conta por chamada falsa.
-                </p>
-              </div>
 
-              <div className="flex flex-col gap-2.5 pt-2">
-                <button
-                  onClick={() => handleCorrectOriginToGps(gpsWarning.lat, gpsWarning.lng)}
-                  className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-red-600/20 active:scale-95 transition-all cursor-pointer"
-                >
-                  📍 Corrigir para minha Posição Real
-                </button>
-                <button
-                  onClick={() => {
-                    setGpsWarning(null);
-                    setViewMode('selection');
-                  }}
-                  className="w-full py-3.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-bold text-xs uppercase tracking-wider rounded-2xl active:scale-95 transition-all cursor-pointer"
-                >
-                  Continuar Mesmo Assim
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Dynamic Toast Alerts */}
       {toastMessage && (
